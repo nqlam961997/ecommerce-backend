@@ -26,6 +26,10 @@ public class Customer {
     @Column(name = "email")
     private String email;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_role", referencedColumnName = "id")
+    private UserRole userRole;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private Set<Order> orders = new HashSet<>();
 
