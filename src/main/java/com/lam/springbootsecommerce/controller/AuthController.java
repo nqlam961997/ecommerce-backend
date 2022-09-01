@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("${spring.data.rest.base-path}")
 public class AuthController {
 
     @Autowired
@@ -27,17 +28,17 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
                             authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password!", e);
+            throw new Exception("Incorrect email or password!", e);
         }
 
-        final UserDetails userDetails = customerServiceImpl.loadUserByUsername(authenticationRequest.getUsername());
+        final UserDetails userDetails = customerServiceImpl.loadUserByUsername(authenticationRequest.getEmail());
 
         final String jwt = jwtUtil.generateToken(userDetails);
 
